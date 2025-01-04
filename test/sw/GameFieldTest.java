@@ -1,15 +1,94 @@
-//package sw;
-//import static org.junit.Assert.assertArrayEquals;
-//import static org.junit.Assert.assertEquals;
-//import static org.junit.Assert.assertFalse;
-//import static org.junit.Assert.assertTrue;
-//import java.awt.Point;
-//import org.junit.Test;
-//
-//import sw.MineField;
-//
-//public class MineFieldTest
-//{
+package sw;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import java.awt.Point;
+import java.util.Random;
+import java.util.Arrays;
+
+import org.junit.Test;
+
+import sw.Main;
+
+public class GameFieldTest
+{
+	@Test
+	public void testGameField_1() {
+	    final int ROWS = 1;
+	    final int COLS = 2;
+	    final int MINES = 1;
+	    GameField.setRandom(new Random(0));
+	    GameField testField = new GameField(ROWS,COLS,MINES);
+	    int[][] expectField = {
+                {1, -1}
+            };
+	    boolean[][] expectExposed = {
+	    		{false, false}
+	    };
+	    assert(Arrays.deepEquals(testField.getField(), expectField));
+	    assert(Arrays.deepEquals(testField.getExposed(), expectExposed));
+	}
+
+	@Test
+	public void testGameField_3() {
+	    final int ROWS = 3;
+	    final int COLS = 3;
+	    final int MINES = 10;
+	    GameField.setRandom(new Random(0));
+	    GameField testField = new GameField(ROWS,COLS,MINES);
+	    int[][] expectField = {
+                {-1, -1, -1},
+                {-1, -1, -1},
+                {-1, -1, -1}
+            };
+	    boolean[][] expectExposed = {
+	    		{false, false, false},
+	    		{false, false, false},
+	    		{false, false, false},
+	    };
+//	    System.out.println(Arrays.deepToString(testField.getField()));
+//	    System.out.println(Arrays.deepToString(expectField));
+//	    System.out.println(Arrays.deepToString(testField.getExposed()));
+//	    System.out.println(Arrays.deepToString(expectExposed));
+	    assert(Arrays.deepEquals(testField.getField(), expectField));
+	    assert(Arrays.deepEquals(testField.getExposed(), expectExposed));
+	}
+	
+	@Test
+	public void testGameField_10() {
+	    final int ROWS = 10;
+	    final int COLS = 10;
+	    final int MINES = 50;
+	    GameField.setRandom(new Random(0));
+	    GameField testField = new GameField(ROWS,COLS,MINES);
+	    int[][] expectField = {
+	    		 { 3,  -1,   2 ,  1,   2,  -1,   2,   3,  -1,   2}, 
+	    		 {-1,  -1,   4 ,  3,  -1,   2,   2,  -1,  -1,   2}, 
+	    		 {-1,   6,  -1 , -1,   2,   1,   2,   4,   4,   2}, 
+	    		 {-1,   5,  -1 ,  4,   2,   2,   4,  -1,  -1,   1}, 
+	    		 { 3,   6,  -1 ,  5,   4,  -1,  -1,  -1,   4,   2}, 
+	    		 {-1,  -1,  -1 , -1,  -1,  -1,   6,   4,  -1,   1}, 
+	    		 {-1,  -1,   8 , -1,  -1,  -1,  -1,   5,   4,   3}, 
+	    		 { 4,  -1,  -1 , -1,   7,   6,  -1,  -1,  -1,  -1}, 
+	    		 { 2,  -1,  -1 , -1,  -1,  -1,   6,  -1,  -1,   3}, 
+	    		 { 1,   2,   4 , -1,  -1,  -1,   4,  -1,   3,   1}
+            };
+	    boolean[][] expectExposed = {
+	    		{false, false, false, false, false, false, false, false, false, false},
+	    		{false, false, false, false, false, false, false, false, false, false},
+	    		{false, false, false, false, false, false, false, false, false, false},
+	    		{false, false, false, false, false, false, false, false, false, false},	   
+	    		{false, false, false, false, false, false, false, false, false, false},
+	    		{false, false, false, false, false, false, false, false, false, false},
+	    		{false, false, false, false, false, false, false, false, false, false},
+	    		{false, false, false, false, false, false, false, false, false, false},	
+	    		{false, false, false, false, false, false, false, false, false, false},
+	    		{false, false, false, false, false, false, false, false, false, false}
+	    };
+	    assert(Arrays.deepEquals(testField.getField(), expectField));
+	    assert(Arrays.deepEquals(testField.getExposed(), expectExposed));
+	}
 //    @Test
 //    public void getRandomCell()
 //    {
@@ -409,4 +488,4 @@
 //        assertArrayEquals("fourth arrays unequal", expected4, actual4);
 //    }
 //
-//}
+}

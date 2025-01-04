@@ -4,8 +4,11 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class InputHandler {
-	static Scanner userInput = new Scanner(System.in);
-
+	private static Scanner userInput = new Scanner(System.in);
+    public static void setScanner(Scanner scanner) {
+        userInput = scanner;
+    }
+    
 	private static void checkQuitKey(String input) {
 	    if (input.contentEquals("q")) {
 	        System.exit(0);
@@ -18,7 +21,7 @@ public class InputHandler {
         while (validChoices.indexOf(choice) == -1) {
             System.out.print("Do you want to play in debug mode? "
             		+ "In debug mode, you can see the value of each cell in the "
-            		+ "mine field. "
+            		+ "mine field. "   
             		+ "(Y/n) => ");
             choice = userInput.nextLine().toLowerCase();
             checkQuitKey(choice);
@@ -28,7 +31,8 @@ public class InputHandler {
         }
         return false;
 	}
-
+	
+	
 	public static int[] gameConfig() {
         int rows = 0;
         int cols = 0;

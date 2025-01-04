@@ -4,6 +4,9 @@ import java.awt.Point;
 import java.util.Random;
 
 public class GameField {
+	
+	private static final int MINE = -1;
+
     private boolean[][] exposed;
     private int[][] field;
     GameField(int rows,int cols,int mines){
@@ -27,6 +30,10 @@ public class GameField {
     /** Random number generator used to get random cells */
     private static Random rand = new Random();
 
+    public static void setRandom(Random customRand) {
+        rand = customRand;
+    }
+
     /**
      * Creates a 2D-array of false values of size rows x cols.
      * This array is used to track which cells in the actual mine field have 
@@ -49,76 +56,21 @@ public class GameField {
         return array;
     }
 
-    /**
-     * Create a 2D-array of size rows x cols with the game setup. 
-     * Cells will have the following values: 
-     * <ul>
-     * 	    <li> -1 if the cell is a mine </li>
-     *      <li> 0 if the cell is not a mine, and the cell has no mines as neighbors </li>
-     *      <li> 1..8, 1 for each mine that the current cell touches. </li> 
-     * </ul>
-     * 
-     * This method calls getRandomCell to choose random places for the mines, 
-     * and setHint to set the value for the non-mine cells.
-     * 
-     * @param rows
-     *            number of rows in the mine field
-     * @param cols
-     *            number of columns in the mine field
-     * @param mines
-     *            number of mines in the mine field
-     * @return a 2D-integer-array (size rows x cols) representing the 
-     *         mine field game board
-     */
     private static int[][] createMineField(int rows, int cols, int mines) {
         int[][] field = new int[rows][cols];
-
-        // If mines >= the area of the field, set all cells to mines.
-        // NOTE: Because of the way the main is set up, this will never happen.
         if (mines >= rows * cols) {
-            for (int r = 0; r < field.length; r++) {
-                for (int c = 0; c < field[r].length; c++) {
-                    field[r][c] = -1;
-                }
-            }
+        	mines = rows * cols;
         }
-        // If mines take up more than half the field, temporarily set all cells
-        // to mines, then select random cells to remove mines from.
-        else if (mines > 0.5 * rows * cols) {
-            for (int r = 0; r < field.length; r++) {
-                for (int c = 0; c < field[r].length; c++) {
-                    field[r][c] = -1;
-                }
+        int minesPlaced = 0;
+        while (minesPlaced < mines) {
+            Point random = getRandomCell(field);
+            while (field[random.x][random.y] == MINE) {
+                random = getRandomCell(field);
             }
-
-            int minesRemoved = 0;
-            while (minesRemoved < rows * cols - mines) {
-                Point random = getRandomCell(field);
-                while (field[random.x][random.y] != -1) {
-                    random = getRandomCell(field);
-                }
-
-                field[random.x][random.y] = 0;
-                minesRemoved++;
-            }
+            field[random.x][random.y] = MINE;
+            minesPlaced++;
         }
-        // If mines take up less than half the field, select random cells to
-        // have mines.
-        else {
-            int minesPlaced = 0;
-            while (minesPlaced < mines) {
-                Point random = getRandomCell(field);
-                while (field[random.x][random.y] == -1) {
-                    random = getRandomCell(field);
-                }
-
-                field[random.x][random.y] = -1;
-                minesPlaced++;
-            }
-        }
-
         setHint(field);
-
         return field;
     }
 
@@ -146,43 +98,21 @@ public class GameField {
      *          field will be changed to reflect the number of adjacent mines
      */
     private static void setHint(int[][] field) {
-        int lastRow = field.length - 1;
+        int[] directions = {-1, 0, 1}; // 相對位置
         for (int r = 0; r < field.length; r++) {
-            int lastCol = field[r].length - 1;
             for (int c = 0; c < field[r].length; c++) {
-                // Don't set a hint if the cell is a mine.
-                if (field[r][c] == -1) {
-                    continue;
-                }
-
-                // Otherwise, count adjacent mines.
+                if (field[r][c] == MINE) continue;
+                
                 int count = 0;
-                if (r != 0 && field[r - 1][c] == -1) {
-                    count++;
+                for (int dr : directions) {
+                    for (int dc : directions) {
+                        if (dr == 0 && dc == 0) continue;
+                        int nr = r + dr, nc = c + dc;
+                        if (nr >= 0 && nr < field.length && nc >= 0 && nc < field[r].length && field[nr][nc] == -1) {
+                            count++;
+                        }
+                    }
                 }
-                if (r != 0 && c != lastCol && field[r - 1][c + 1] == -1) {
-                    count++;
-                }
-                if (c != lastCol && field[r][c + 1] == -1) {
-                    count++;
-                }
-                if (r != lastRow && c != lastCol && field[r + 1][c + 1] == -1) {
-                    count++;
-                }
-                if (r != lastRow && field[r + 1][c] == -1) {
-                    count++;
-                }
-                if (r != lastRow && c != 0 && field[r + 1][c - 1] == -1) {
-                    count++;
-                }
-                if (c != 0 && field[r][c - 1] == -1) {
-                    count++;
-                }
-                if (r != 0 && c != 0 && field[r - 1][c - 1] == -1) {
-                    count++;
-                }
-
-                // Set the value of the cell to the number of adjacent mines.
                 field[r][c] = count;
             }
         }

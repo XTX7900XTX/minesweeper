@@ -73,18 +73,11 @@ public class GameWinLogic {
     private static boolean won(int[][] field, boolean[][] exposed) {
         for (int r = 0; r < field.length; r++) {
             for (int c = 0; c < field[r].length; c++) {
-                // If there is a cell that isn't a mine hasn't been exposed,
-                // the player has not won yet.
-                if (field[r][c] != -1 && !exposed[r][c]) {
-                    return false;
-                }
-                // If the player exposes a mine, they lose.
-                if (field[r][c] == -1 && exposed[r][c]) {
+                if ((field[r][c] != -1 && !exposed[r][c]) || (field[r][c] == -1 && exposed[r][c])) {
                     return false;
                 }
             }
         }
-
         return true;
     }
 
